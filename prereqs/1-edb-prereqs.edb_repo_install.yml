@@ -1,0 +1,15 @@
+################################################################
+#
+# Copyright (c) 2016-2017 EnterpriseDB - All rights reserved.
+#
+################################################################
+
+# Usage: ansible-playbook prereqs/1-edb-prereqs.edb_repo_install.yml --extra-vars "host=ansible-tests"
+
+- hosts: "{{ host }}"
+
+  tasks:
+    - name: Install latest EDB Repo
+      yum:
+        name: https://yum.enterprisedb.com/edbrepos/edb-repo-latest.noarch.rpm
+        state: present
