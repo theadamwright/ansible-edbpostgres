@@ -1,0 +1,105 @@
+# Usage:  ansible-playbook epas/edb-as-03.config_epas11.yml --extra-vars "host=ansible-tests pgmajor=11 cidr1=10.142.0.0/24 cidr2=10.138.0.0/24"
+
+- hosts: "{{ host }}"
+  vars:
+        asmajor: "{{ pgmajor }}"
+
+  tasks:
+    - name: Environment variables for working with EPAS11
+      blockinfile:
+        create: yes
+        marker: "# {mark} Ansible Managed Environment Variables for EPAS"
+        dest: /etc/profile.d/edb_as_env.sh
+        block: |
+          export PGMAJOR={{ asmajor }}
+          export PGDATA=/var/lib/edb/as{{ asmajor }}/data
+          export PGPORT=5444
+          export PGDATABASE=edb
+          export PGUSER=enterprisedb
+          export PATH=/usr/edb/as{{ asmajor }}/bin:${PATH}
+
+    - name: Create modified configuration file for including EDB Best Practices
+      blockinfile:
+        marker: "# {mark} Ansible Managed Includes"
+        dest: /var/lib/edb/as11/data/postgresql.conf
+        block: |
+          include = 'edb_best_practices_params.conf'
+
+    - name: Create includes file
+      blockinfile:
+        create: yes
+        owner: enterprisedb
+        group: enterprisedb
+        mode: 0600
+        marker: "# {mark} Ansible Managed EDB Best Practices Parameters"
+        dest: /var/lib/edb/as11/data/edb_best_practices_params.conf
+        content: |
+          # EDB Best Practices Parameters
+
+    - name: Add Best Practices for logging
+      blockinfile:
+        dest: /var/lib/edb/as11/data/edb_best_practices_params.conf
+        marker: "# {mark} Ansible Managed Logging Parameters"
+        block: |
+          log_line_prefix = '%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h'
+          log_checkpoints = on
+          log_lock_waits = on
+          log_temp_files = 0
+          log_autovacuum_min_duration = 0
+          log_error_verbosity = default
+
+    - name: Add Resource Usage Parameters
+      blockinfile:
+        dest: /var/lib/edb/as11/data/edb_best_practices_params.conf
+        marker: "# {mark} Ansible Managed Resource Usage"
+        block: |
+          bgwriter_delay = 100ms
+          bgwriter_lru_maxpages = 1000
+          bgwriter_lru_multiplier = 4
+
+    - name: Add WAL Parameters
+      blockinfile:
+        dest: /var/lib/edb/as11/data/edb_best_practices_params.conf
+        marker: "# {mark} Ansible Managed Write Ahead Log Parameters"
+        block: |
+          checkpoint_completion_target = 0.9
+          checkpoint_warning = 1min
+          wal_buffers = 64MB
+          min_wal_size = 1GB
+          max_wal_size = 10GB
+
+    - name: Add Query Tuning Parameters
+      blockinfile:
+        dest: /var/lib/edb/as11/data/edb_best_practices_params.conf
+        marker: "# {mark} Ansible Managed Query Tuning Parameters"
+        block: |
+          cpu_tuple_cost = 0.03
+          random_page_cost = 2
+
+    - name: Add VACUUM Parameters
+      blockinfile:
+        dest: /var/lib/edb/as11/data/edb_best_practices_params.conf
+        marker: "# {mark} Ansible Managed VACUUM Parameters"
+        block: |
+          autovacuum_vacuum_cost_delay = 10ms
+          autovacuum_naptime = 5
+          autovacuum_vacuum_scale_factor = 0.05
+          autovacuum_analyze_scale_factor = 0.05
+          autovacuum_vacuum_cost_limit = -1
+          vacuum_cost_limit = 800
+
+    - name: Update pg_hba.conf with cidr1 entry
+      blockinfile:
+        dest: /var/lib/edb/as11/data/pg_hba.conf
+        marker: "# {mark} Ansible Managed pg_hba settings for cidr1"
+        block: |
+          host    all            all                     {{ cidr1 }} md5
+      when: cidr1 is defined
+
+    - name: Update pg_hba.conf with cidr2 entry
+      blockinfile:
+        dest: /var/lib/edb/as11/data/pg_hba.conf
+        marker: "# {mark} Ansible Managed pg_hba settings for cidr2"
+        block: |
+          host    all            all                     {{ cidr2 }}  md5
+      when: cidr2 is defined

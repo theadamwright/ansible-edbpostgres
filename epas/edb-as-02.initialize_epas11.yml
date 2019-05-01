@@ -1,0 +1,74 @@
+################################################################
+#
+# Copyright (c) 2016-2017 EnterpriseDB - All rights reserved.
+#
+################################################################
+
+# Usage: ansible-playbook epas/edb-as-02.initialize_epas11.yml --extra-vars "host=ansible-tests pgdata=/opt/edb/pgdata pgwal=/opt/edb/pgwal pgmajor=11"
+# PGDATA and PGWAL are optional
+
+- hosts: "{{ host }}"
+  vars:
+        asmajor: "{{ pgmajor }}"
+
+  tasks:
+    - name: Create PGDATA direcotry
+      file:
+        path: "{{ pgdata }}"
+        state: directory
+        owner: enterprisedb
+        group: enterprisedb
+        mode: 0700
+      when: pgdata is defined
+
+    - name: Create PGWAL direcotry
+      file:
+        path: "{{ pgwal }}"
+        state: directory
+        owner: enterprisedb
+        group: enterprisedb
+        mode: 0700
+      when: pgwal is defined
+
+    - name: Initialize EPAS with custom PGDATA and PGWAL
+      shell: /usr/edb/as11/bin/initdb --waldir="{{ pgwal }}" --pgdata="{{ pgdata }}"
+      when: pgdata is defined and pgwal is defined
+      become: true
+      become_user: enterprisedb
+      become_method: sudo
+
+    - name: Initialize EPAS with custom PGDATA, but NOT custom PGWAL
+      shell: /usr/edb/as11/bin/initdb --pgdata="{{ pgdata }}"
+      when: pgdata is defined and pgwal is undefined
+      become: true
+      become_user: enterprisedb
+      become_method: sudo
+
+    - name: Initialize EPAS with custom PGWAL, but NOT custom PGDATA
+      shell: /usr/edb/as11/bin/initdb --pgdata=/var/lib/edb/as11/data/ --waldir="{{ pgwal }}"
+      when: pgdata is undefined and pgwal is defined
+      become: true
+      become_user: enterprisedb
+      become_method: sudo
+
+    - name: Remove default PGDATA directory
+      file:
+        path: /var/lib/edb/as11/data/
+        state: absent
+      when: pgdata is defined
+
+    - name: Create symbolic link from default PGDATA to custom to PGDATA (useful for running EPAS with system service)
+      file:
+        src: "{{ pgdata }}"
+        path: /var/lib/edb/as11/data
+        owner: enterprisedb
+        group: enterprisedb
+        state: link
+        mode: 0700
+      when: pgdata is defined
+
+    - name: Starting EPAS as a system service...
+      systemd:
+        name: edb-as-11
+        state: started
+        enabled: yes

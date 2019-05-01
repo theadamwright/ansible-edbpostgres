@@ -1,0 +1,28 @@
+################################################################
+#
+# Copyright (c) 2016-2017 EnterpriseDB - All rights reserved.
+#
+################################################################
+
+# Usage: ansible-playbook epas/edb-as-01.install_epas11.yml --extra-vars "host=ansible-tests pgmajor=11"
+
+# Works with both EPAS 10 and up
+
+
+- hosts: "{{ host }}"
+  vars:
+        asmajor: "{{ pgmajor }}"
+
+  tasks:
+    - name: enable_enterprisedb-edbas11
+      shell: sed -i "\/edbas{{ asmajor }}/,/gpgcheck/ s/enabled=0/enabled=1/" /etc/yum.repos.d/edb.repo
+      args:
+        warn: false
+
+    - name: Install EDB Postgres Advanced Server
+      yum:
+        name : ["edb-as{{ asmajor }}-server-core"]
+        state: latest
+
+    - name: Set EDB Postgres Advanced Server to start on boot
+      shell: "chkconfig edb-as-{{ asmajor }}"
