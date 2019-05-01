@@ -1,0 +1,30 @@
+################################################################
+#
+# Copyright (c) 2016-2017 EnterpriseDB - All rights reserved.
+#
+################################################################
+
+# Usage: ansible-playbook edb-rs-01.install_eprs7.yml --extra-vars "host=ansible-tests"
+
+- hosts: "{{ host }}"
+
+  tasks:
+    - name: Enable EnterpriseDB Tools Repo
+      shell: sed -i "\/enterprisedb-tools/,/gpgcheck/ s/enabled=0/enabled=1/" /etc/yum.repos.d/edb.repo
+      args:
+        warn: false
+
+    - name: Enable EnterpriseDB Depdendencies Repo
+      shell: sed -i "\/enterprisedb-dependencie/,/gpgcheck/ s/enabled=0/enabled=1/" /etc/yum.repos.d/edb.repo
+      args:
+        warn: false
+
+    - name: Ensure Java is installed
+      yum:
+       name: java
+       state: latest
+
+    - name: Install EDB Replication Server 7
+      yum:
+        name : ["edb-rs*"]
+        state: latest

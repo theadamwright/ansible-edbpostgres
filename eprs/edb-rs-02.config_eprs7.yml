@@ -1,0 +1,94 @@
+################################################################
+#
+# Copyright (c) 2016-2017 EnterpriseDB - All rights reserved.
+#
+################################################################
+
+# Usage:  ansible-plybook eprs/edb-rs-02.config_eprs7.yml --extra-vars "host=ansible-tests"
+# Usage:  ansible-playbook eprs/edb-rs-02.config_eprs7.yml --extra-vars "host=ansible-tests rsdata=/opt/edb/rsdata"
+
+- hosts: "{{ host }}"
+  gather_facts: True
+
+  tasks:
+    - name: Setup Environment variables for working with RS Command Line Tools
+      blockinfile:
+        create: yes
+        dest: /etc/profile.d/edb_rs_env.sh
+        marker: "# {mark} Ansible Managed Environment Variables for EPRS7"
+        block: |
+          NGXPASSPATH=/opt/edb
+          export EPRS_HOME=/usr/edb/rs-7.0
+          export EPRS_CLIENT_CONFIG=/usr/edb/rs-7.0/client/etc
+          export EPRS_SERVER_CONFIG=/usr/edb/rs-7.0/server/etc
+          alias eprs_server='bash /usr/edb/rs-7.0/server/bin/runServer.sh'
+          alias eprs_client='bash /usr/edb/rs-7.0/client/bin/runRepCLI.sh'
+
+# TO-DO Convert into a LOOP
+
+    - name: Update Firewall Rules to Allow EPRS communication
+      firewalld:
+        port: 2181/udp
+        permanent: yes
+        state: enabled
+
+    - name: Update Firewall Rules to Allow EPRS communication
+      firewalld:
+        port: 2881/tcp
+        permanent: yes
+        state: enabled
+
+    - name: Update Firewall Rules to Allow EPRS communication
+      firewalld:
+        port: 3881/tcp
+        permanent: yes
+        state: enabled
+
+    - name: Update Firewall Rules to Allow EPRS communication
+      firewalld:
+        port: 8081-8082/tcp
+        permanent: yes
+        state: enabled
+
+    - name: Create custom direcotry for Kafka Logs
+      file:
+        path: "{{ rsdata }}"
+        state: directory
+        owner: enterprisedb
+        group: enterprisedb
+        mode: 0700
+      when: rsdata is defined
+
+    - name: Remove default Kafka Log directory
+      file:
+        path: /var/lib/edb/rs/data/
+        state: absent
+      when: rsdata is defined
+
+    - name: Create symbolic link from default Kafka Log Directory to custom to RSDATA
+      file:
+        src: "{{ rsdata }}"
+        path: /var/lib/edb/rs/data
+        owner: enterprisedb
+        group: enterprisedb
+        state: link
+        mode: 0700
+      when: rsdata is defined
+
+    - name: Change CDC Compression Type
+      replace:
+        path: /usr/edb/rs-7.0/server/etc/application.properties
+        regexp: 'cdc.compression.type=producer'
+        replace: 'cdc.compression.type=snappy'
+
+    - name: Increase Zookeeper Session Timeout
+      replace:
+        path: /usr/edb/rs-7.0/server/etc/server.properties
+        regexp: 'zookeeper.session.timeout.ms=50000'
+        replace: 'zookeeper.session.timeout.ms=60000'
+
+    - name: Add Node IP to RS application.properties
+      replace:
+        path: /usr/edb/rs-7.0/server/etc/application.properties
+        regexp: 'ngen.server.host=localhost'
+        replace: 'ngen.server.host={{ansible_default_ipv4.address}}'

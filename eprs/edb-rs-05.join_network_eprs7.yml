@@ -1,0 +1,21 @@
+################################################################
+#
+# Copyright (c) 2016-2017 EnterpriseDB - All rights reserved.
+#
+################################################################
+
+# Usage: ansible-playbook edb-rs-05.join_network_eprs7.yml --extra-vars "host=ansible-tests dbpwd=3db_pwd"
+
+- hosts: "{{ host }}"
+  gather_facts: True
+  vars:
+        rspassword: "{{ rspwd }}"
+        dbpassword: "{{ dbpwd }}"
+
+  tasks:
+    - name: Join the EPRS Network
+      expect:
+        command: /bin/bash -c "/usr/edb/rs-7.0/client/bin/runRepCLI.sh -joinnetwork -servername leaderNode -host {{ansible_default_ipv4.address}} -port 8082 -user admin"
+        responses:
+          Question:
+          (.*)Enter user password(.*): "{{ rspassword }}"
