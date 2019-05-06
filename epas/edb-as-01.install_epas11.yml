@@ -19,10 +19,12 @@
       args:
         warn: false
 
+    - name: enable_edb-dependencies
+      shell: sed -i "\/enterprisedb-dependencies/,/gpgcheck/ s/enabled=0/enabled=1/" /etc/yum.repos.d/edb.repo
+      args:
+        warn: false
+
     - name: Install EDB Postgres Advanced Server
       yum:
         name : ["edb-as{{ asmajor }}-server-core"]
         state: latest
-
-    - name: Set EDB Postgres Advanced Server to start on boot
-      shell: "chkconfig edb-as-{{ asmajor }}"
