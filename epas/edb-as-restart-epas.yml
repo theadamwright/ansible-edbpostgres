@@ -1,0 +1,17 @@
+################################################################
+#
+# Copyright (c) 2016-2017 EnterpriseDB - All rights reserved.
+#
+################################################################
+
+# Usage:  ansible-playb# Usage: ansible-playbook epas/edb-as-restart-epas.yml --extra-vars "host=ansible-tests pgmajor=11"
+- hosts: "{{ host }}"
+  vars:
+        asmajor: "{{ pgmajor }}"
+
+  tasks:
+    - name: Restarting EPAS
+      systemd:
+        name: edb-as-{{ asmajor }}.service
+        state: restarted
+        enabled: yes
