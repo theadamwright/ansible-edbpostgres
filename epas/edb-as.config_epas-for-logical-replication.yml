@@ -1,0 +1,16 @@
+# Usage:  ansible-playbook epas/edb-as.config_epas-for-logical-replication.yml --extra-vars "host=ansible-tests pgmajor=11"
+
+- hosts: "{{ host }}"
+  vars:
+        asmajor: "{{ pgmajor }}"
+
+  tasks:
+    - name: Add Best Practices for logging
+      blockinfile:
+        dest: /var/lib/edb/as{{ asmajor }}/data/edb_best_practices_params.conf
+        marker: "# {mark} Ansible Managed Logical Replication Parameters"
+        block: |
+          wal_level = logical
+          max_wal_senders = 10
+          max_replication_slots = 10
+          track_commit_timestamp = on
