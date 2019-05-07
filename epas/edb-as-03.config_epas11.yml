@@ -1,3 +1,9 @@
+################################################################
+#
+# Copyright (c) 2016-2017 EnterpriseDB - All rights reserved.
+#
+################################################################
+
 # Usage:  ansible-playbook epas/edb-as-03.config_epas11.yml --extra-vars "host=ansible-tests pgmajor=11 cidr1=10.142.0.0/24 cidr2=10.138.0.0/24"
 
 - hosts: "{{ host }}"
