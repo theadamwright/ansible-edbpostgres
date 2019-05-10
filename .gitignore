@@ -29,3 +29,6 @@ gen
 testing/enable_edb_repo.yml
 testing/install_epel_repo.yml
 .idea
+
+# Visual Studio Code files
+sftp.json
