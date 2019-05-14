@@ -143,10 +143,16 @@
       lineinfile:
         path: /usr/edb/rs-7.0/server/etc/producer.properties
         regexp: 'buffer.memory='
-        line: 'buffer.memory=33554432'
+        line: 'buffer.memory=157286400'
 
     - name: Set max.request.size in producer.properties of all EPRS servers.
       lineinfile:
         path: /usr/edb/rs-7.0/server/etc/producer.properties
         regexp: 'max.request.size='
-        line: 'max.request.size=1048576'
+        line: 'max.request.size=157286400'
+
+    - name: Change Compression Type in producer.properties
+      lineinfile:
+        path: /usr/edb/rs-7.0/server/etc/producer.properties
+        regexp: 'compression.type='
+        line: 'compression.type=lz4'
