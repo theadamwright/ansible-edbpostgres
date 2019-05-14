@@ -4,7 +4,7 @@
 #
 ################################################################
 
-# Usage:  ansible-plybook eprs/edb-rs-02.config_eprs7.yml --extra-vars "host=ansible-tests"
+# Usage:  ansible-playbook eprs/edb-rs-02.config_eprs7.yml --extra-vars "host=ansible-tests"
 # Usage:  ansible-playbook eprs/edb-rs-02.config_eprs7.yml --extra-vars "host=ansible-tests rsdata=/opt/edb/rsdata"
 
 - hosts: "{{ host }}"
@@ -48,7 +48,7 @@
         permanent: yes
         state: enabled
 
-    - name: Create custom direcotry for Kafka Logs
+    - name: Create custom directory for Kafka Logs
       file:
         path: "{{ rsdata }}"
         state: directory
@@ -73,17 +73,41 @@
         mode: 0700
       when: rsdata is defined
 
-    - name: Change CDC Compression Type
-      replace:
+    - name: Change CDC Compression Type in application.properties
+      lineinfile:
         path: /usr/edb/rs-7.0/server/etc/application.properties
-        regexp: 'cdc.compression.type=producer'
-        replace: 'cdc.compression.type=snappy'
+        regexp: 'cdc.compression.type='
+        line: 'cdc.compression.type=lz4'
+
+    - name: Change Snapshot Compression Type in application.properties
+      lineinfile:
+        path: /usr/edb/rs-7.0/server/etc/application.properties
+        regexp: 'snapshot.compression.type='
+        line: 'snapshot.compression.type=lz4'
+
+    - name: Change publisher.batch.ms in application.properties
+      lineinfile:
+        path: /usr/edb/rs-7.0/server/etc/application.properties
+        regexp: 'publisher.batch.ms='
+        line: 'publisher.batch.ms=300'
+
+    - name: Change subscriber.batch.size in application.properties
+      lineinfile:
+        path: /usr/edb/rs-7.0/server/etc/application.properties
+        regexp: 'subscriber.batch.size='
+        line: 'subscriber.batch.size=4500'
+
+    - name: Change snapshot.buffer.size in application.properties
+      lineinfile:
+        path: /usr/edb/rs-7.0/server/etc/application.properties
+        regexp: 'snapshot.buffer.size='
+        line: 'snapshot.buffer.size=32'
 
     - name: Increase Zookeeper Session Timeout
-      replace:
+      lineinfile:
         path: /usr/edb/rs-7.0/server/etc/server.properties
-        regexp: 'zookeeper.session.timeout.ms=50000'
-        replace: 'zookeeper.session.timeout.ms=60000'
+        regexp: 'zookeeper.session.timeout.ms='
+        line: 'zookeeper.session.timeout.ms=60000'
 
     - name: Add Node IP to RS application.properties
       replace:
@@ -91,8 +115,20 @@
         regexp: 'ngen.server.host=localhost'
         replace: 'ngen.server.host={{ansible_default_ipv4.address}}'
 
-    - name: Set buffer.memory in producer.properties of all EPRS servers.
+    - name: Increase Java Heap Size
       replace:
+        path: /usr/edb/rs-7.0/server/etc/kafka-jvm-configs.properties
+        regexp: 'heap.opts=-Xms1G -Xmx4G'
+        replace: 'heap.opts=-Xms4G -Xmx8G'
+
+    - name: Set buffer.memory in producer.properties of all EPRS servers.
+      lineinfile:
         path: /usr/edb/rs-7.0/server/etc/producer.properties
-        regexp: 'buffer.memory=157286400'
-        replace: 'buffer.memory=33554432'
+        regexp: 'buffer.memory='
+        line: 'buffer.memory=33554432'
+
+    - name: Set max.request.size in producer.properties of all EPRS servers.
+      lineinfile:
+        path: /usr/edb/rs-7.0/server/etc/producer.properties
+        regexp: 'max.request.size='
+        line: 'max.request.size=1048576'
