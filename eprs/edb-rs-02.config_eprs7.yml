@@ -103,6 +103,24 @@
         regexp: 'snapshot.buffer.size='
         line: 'snapshot.buffer.size=32'
 
+    - name: Change poll.records in consumer.properties
+      lineinfile:
+        path: /usr/edb/rs-7.0/server/etc/consumer.properties
+        regexp: 'max.poll.records='
+        line: 'max.poll.records=4500'
+
+    - name: Change heartbeat.interval.ms in consumer.properties
+      lineinfile:
+        path: /usr/edb/rs-7.0/server/etc/consumer.properties
+        regexp: 'heartbeat.interval.ms='
+        line: 'heartbeat.interval.ms=6000'
+
+    - name: Change auto.offset.reset in consumer.properties
+      lineinfile:
+        path: /usr/edb/rs-7.0/server/etc/consumer.properties
+        regexp: 'auto.offset.reset='
+        line: 'auto.offset.reset=earliest'
+
     - name: Increase Zookeeper Session Timeout
       lineinfile:
         path: /usr/edb/rs-7.0/server/etc/server.properties
