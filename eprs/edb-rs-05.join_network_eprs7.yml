@@ -4,7 +4,7 @@
 #
 ################################################################
 
-# Usage: ansible-playbook edb-rs-05.join_network_eprs7.yml --extra-vars "host=ansible-tests dbpwd=3db_pwd"
+# Usage: ansible-playbook edb-rs-05.join_network_eprs7.yml --extra-vars "host=ansible-tests"
 
 - hosts: "{{ host }}"
   gather_facts: True
