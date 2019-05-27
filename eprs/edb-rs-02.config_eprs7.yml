@@ -4,8 +4,8 @@
 #
 ################################################################
 
-# Usage:  ansible-playbook eprs/edb-rs-02.config_eprs7.yml --extra-vars "host=ansible-tests"
-# Usage:  ansible-playbook eprs/edb-rs-02.config_eprs7.yml --extra-vars "host=ansible-tests rsdata=/opt/edb/rsdata"
+# Usage:  ansible-playbook edb-rs-02.config_eprs7.yml --extra-vars "host=gcp-eprs"
+# Usage:  ansible-playbook edb-rs-02.config_eprs7.yml --extra-vars "host=gcp-eprs rsdata=/opt/edb/rsdata"
 
 - hosts: "{{ host }}"
   gather_facts: True
@@ -132,6 +132,12 @@
         path: /usr/edb/rs-7.0/server/etc/application.properties
         regexp: 'ngen.server.host=localhost'
         replace: 'ngen.server.host={{ansible_default_ipv4.address}}'
+
+    - name: Don't stop RS on unique conflicts
+      lineinfile:
+        path: /usr/edb/rs-7.0/server/etc/application.properties
+        regexp: 'unique.conflict.resolution.policy='
+        line: 'unique.conflict.resolution.policy=SKIP'
 
     - name: Increase Java Heap Size
       replace:
