@@ -37,7 +37,7 @@ CIDR options for pg_hba.conf are optional
 ansible-playbook edb-as-03.config_epas11.yml --extra-vars "host=gpc-dbservers pgmajor=11 cidr1=10.142.0.0/24 cidr2=10.138.0.0/24"
  ```
 
-**edb-as-restart-epas11.yml** is a playbook to be used when ad-hoc restarts of the database servers are required. 
+**edb-as-restart-epas.yml** is a playbook to be used when ad-hoc restarts of the database servers are required. 
 ```
 ansible-playbook edb-as-restart-epas.yml --extra-vars "host=gpc-dbservers pgmajor=11"
 ```
