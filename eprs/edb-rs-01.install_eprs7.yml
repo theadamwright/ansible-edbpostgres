@@ -7,6 +7,8 @@
 # Usage: ansible-playbook edb-rs-01.install_eprs7.yml --extra-vars "host=gcp-eprs"
 
 - hosts: "{{ host }}"
+  vars:
+        asmajor: "{{ pgmajor | default(11) }}"
 
   tasks:
     - name: Enable EnterpriseDB Tools Repo
@@ -20,13 +22,13 @@
         warn: false
 
     - name: Enable EnterpriseDB EPAS Repo to install client library
-      shell: sed -i "\/edbas11/,/gpgcheck/ s/enabled=0/enabled=1/" /etc/yum.repos.d/edb.repo
+      shell: sed -i "\/edbas{{ asmajor }}/,/gpgcheck/ s/enabled=0/enabled=1/" /etc/yum.repos.d/edb.repo
       args:
         warn: false
 
     - name: Install EPAS client libraries, prerequisite for EPRS7 installation
       yum:
-       name:  edb-as11-server-client
+       name:  edb-as{{ asmajor }}-server-client
        state: latest
 
     - name: Ensure Java is installed
