@@ -9,31 +9,45 @@ Playbooks in the EPRS directory will:
 * Set the Database Password 
 * Set the Replication Server Admin password 
  
-
-Note: Currently, requires modifying tool repo to yum-staging. The EPRS path changes with the April 30th build pushed to yum-staging. 
-
-## Inspiration 
-
-Raghavendra Rao's EPRS 7 Setup: 
-
-Blog Post:
-https://www.raghavt.com/blog/2019/04/28/3-node-multi-master-replication-with-edb-postgres-replication-server-7.beta/
-
-Video: 
-https://www.youtube.com/watch?v=NPSgtzrU7VU
-
 ## Getting Started
-
-### Prerequisites
-
 
 ### Installing
 
+**edb-rs-01.install_eprs7.yml** does a basic installed of EPRS7. No Kafka or Zookeeper server is running at this point. 
 
-## Authors
+```
+ansible-playbook edb-rs-01.install_eprs7.yml --extra-vars "host=gcp-eprs"
+```
 
+**edb-rs-02.config_eprs7.yml** configure EPRS7 with EDB Best Practices and optionally places Kafa data on a seperate disk volume. 
 
-## License
+```
+ansible-playbook edb-rs-02.config_eprs7.yml --extra-vars "host=gcp-eprs rsdata=/opt/edb/rsdata"
+```
 
+**rs-03.start_eprs7.yml** Starts EPRS7 as a system service. 
+```
+ansible-playbook edb-rs-03.start_eprs7.yml --extra-vars "host=gcp-eprs"
+```
 
+**rs-03.start_eprs7.yml** Starts EPRS7 as a system service. 
+```
+ansible-playbook edb-rs-03.start_eprs7.yml --extra-vars "host=gcp-eprs"
+```
+**edb-rs-04.set_passwords_eprs7.yml** 
+One time playbook to set the replication admins password and database credentials to be encrypted for use with the repcli. 
+```
+ansible-playbook edb-rs-04.set_passwords_eprs7.yml --extra-vars "host=ansible-tests dbpwd=3db_pwd rspwd=adm1n"
+```
 
+**edb-rs-05.join_network_eprs7.yml**
+
+Add the nodes to the Replication (Kafka) network 
+```
+ansible-playbook edb-rs-05.join_network_eprs7.yml --extra-vars "host=gcp-eprs"
+```
+
+**edb-rs.stop_eprs7.yml** playbook is used for ad-hoc stopping of the EPRS7 system service. 
+```
+ansible-playbook edb-rs.stop_eprs7.yml --extra-vars "host=gcp-eprs"
+```

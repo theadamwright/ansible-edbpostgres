@@ -4,11 +4,11 @@
 #
 ################################################################
 
-# Usage:  ansible-playbook epas/edb-as.config_epas-for-logical-replication.yml --extra-vars "host=ansible-tests pgmajor=11"
+# Usage:  ansible-playbook edb-as.config_epas-for-logical-replication.yml --extra-vars "host=ansible-tests pgmajor=11"
 
 - hosts: "{{ host }}"
   vars:
-        asmajor: "{{ pgmajor }}"
+        asmajor: "{{ pgmajor | default(11) }}"
 
   tasks:
     - name: Add Best Practices for logging

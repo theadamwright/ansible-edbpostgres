@@ -1,9 +1,12 @@
 # EDB Postgres Prerequisites
 
-The playbooks in the prereqs directory need to be played before installing EDB Postgres software. This will setup the EDB YUM Repo, allowing for installation of EDB software using Yaast Update Manager.  
+The playbook in the prereqs directory installs the EDB YUM repo on host server and configures the edb.repo file with the YUM username and YUM Password pulled from the following environment variables on the Ansible Controller: `EDBYUMUSERNAME` and `EDBYUMPASSWORD`
+
+The playbook in the pre-reqs directory need to be played before installing EDB Postgres software using th. The playbook requires `EDBYUMUSERNAME` and `EDBYUMPASSWORD` to be set on the Ansible Controller. 
+
+APT coming soon...
 
 ## Getting Started
-
 
 
 ### Prerequisites
@@ -15,24 +18,18 @@ The playbooks in the prereqs directory need to be played before installing EDB P
 3. EDB YUM credentials should be set as an environment variable on the Ansible controller server. To set once: 
 
 ```
-export EDBYUMUSERNAME="edb-adamwright"
+export EDBYUMUSERNAME="awright"
 export EDBYUMPASSWORD="00001111222233334444"
 ```
 
 ### Installing
 
-Playbook **1-edb-prereqs.edb_repo_install.yml** installs the edb repo file onto each guest. After installing, the guest will have a edb.repo file in /yum/repos.d/ .
+Playbook **1-edb-prereqs.edb_repo_config.yml** installs the `edb.repo` file onto each host. After installing, the hosts will have a `edb.repo` file in `/yum/repos.d/`. The YUM username and password credentials read from environment variables set on the Ansible Controller are then updated on the  `edb.repo` file.   
 
-In the example for **1-edb-prereqs.edb_repo_install.yml** , we have a group of edb-servers in our Ansible hosts file that will all have the EDB repo installed:
-```
-ansible-playbook 1-edb-prereqs.edb_repo_install.yml --extra-vars "host=edb-servers"
-```
+In the example for **1-edb-prereqs.edb_repo_config.yml**, there is a global group edb-servers in our Ansible hosts file that will all have the EDB repo installed:
 
-Playbook **2-edb-prereqs.edb_repo_configure.yml** configures the edb.repo file on guest machines with YUM username and password credentials read from environment variables set on the Ansible Controller. 
-
-In this example for **2-edb-prereqs.edb_repo_configure.yml** , we have a group of edb-servers in our Ansible hosts file that will  have the yumusername and yumpassword updated with the credentials read from the Ansible Controller. 
 ```
-ansible-playbook 2-edb-prereqs.edb_repo_configure.yml --extra-vars "host=edb-servers"
+ansible-playbook 1-edb-prereqs.edb_repo_config.yml --extra-vars "host=edb-servers"
 ```
 
 ## Authors
@@ -40,6 +37,3 @@ ansible-playbook 2-edb-prereqs.edb_repo_configure.yml --extra-vars "host=edb-ser
 Adam Wright 
 
 ## License
-
-
-
