@@ -17,7 +17,7 @@
         dest: /etc/profile.d/edb_rs_env.sh
         marker: "# {mark} Ansible Managed Environment Variables for EPRS7"
         block: |
-          NGXPASSPATH=/opt/edb
+          export NGXPASSPATH=/opt/edb
           export EPRS_HOME=/usr/edb/rs-7.0
           export EPRS_CLIENT_CONFIG=/usr/edb/rs-7.0/client/etc
           export EPRS_SERVER_CONFIG=/usr/edb/rs-7.0/server/etc
