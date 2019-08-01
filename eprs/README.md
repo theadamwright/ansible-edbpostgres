@@ -30,19 +30,12 @@ ansible-playbook edb-rs-02.config_eprs7.yml --extra-vars "host=gcp-eprs rsdata=/
 ansible-playbook edb-rs-03.start_eprs7.yml --extra-vars "host=gcp-eprs"
 ```
 
-**rs-03.start_eprs7.yml** Starts EPRS7 as a system service. 
-```
-ansible-playbook edb-rs-03.start_eprs7.yml --extra-vars "host=gcp-eprs"
-```
-**edb-rs-04.set_passwords_eprs7.yml** 
-One time playbook to set the replication admins password and database credentials to be encrypted for use with the repcli. 
+**edb-rs-04.init_leader_eprs7.yml** One time playbook to set the replication admin password start the leader node 
 ```
 ansible-playbook edb-rs-04.set_passwords_eprs7.yml --extra-vars "host=ansible-tests dbpwd=3db_pwd rspwd=adm1n"
 ```
 
-**edb-rs-05.join_network_eprs7.yml**
-
-Add the nodes to the Replication (Kafka) network 
+**edb-rs-05.join_network_eprs7.yml** Add the nodes to the Replication (Kafka) network 
 ```
 ansible-playbook edb-rs-05.join_network_eprs7.yml --extra-vars "host=gcp-eprs"
 ```

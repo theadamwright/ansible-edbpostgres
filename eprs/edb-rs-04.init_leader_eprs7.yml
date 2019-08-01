@@ -4,14 +4,12 @@
 #
 ################################################################
 
-# Usage: ansible-playbook edb-rs-04.set_passwords_eprs7.yml --extra-vars "host=eprs-leader dbpwd=3db_pwd"
-# Usage: ansible-playbook edb-rs-04.set_passwords_eprs7.yml --extra-vars "host=eprs-leader dbpwd=3db_pwd rspwd=adm1n"
+# Usage: ansible-playbook edb-rs-04.set_passwords_eprs7.yml --extra-vars "host=eprs-leader rspwd=adm1n"
 
 - hosts: "{{ host }}"
   gather_facts: True
   vars:
         rspassword: "{{ rspwd }}"
-        dbpassword: "{{ dbpwd }}"
 
   tasks:
 
@@ -23,9 +21,6 @@
     - name: Install expects module pre-requisites...
       easy_install:
         name: pexpect
-
-    - name: Provide Database Password Input File...
-      shell: echo {{ dbpassword }} > ~/dbpassword.txt
 
     - name: Setting up .ngxpass, since -savepassword is not
       blockinfile:
@@ -46,6 +41,3 @@
           Question:
           (.*)Enter admin password(.*): "{{ rspassword }}"
 #      no_log: true
-
-    - name: Encrypt the Database Password...
-      shell: /bin/bash -c "/usr/edb/rs-7.0/client/bin/runRepCLI.sh -encrypt -input ~/dbpassword.txt -output ~/dbpassword.out -ngxpasspath /opt/edb/ -user admin"

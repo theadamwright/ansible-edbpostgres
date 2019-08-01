@@ -4,18 +4,19 @@
 #
 ################################################################
 
-# Usage: ansible-playbook edb-rs-05.join_network_eprs7.yml --extra-vars "host=ansible-tests"
+# This playbook assumes the command is being run on the leader node (Host=${Ansible Host entry for leader node}})
+# Refer to the EPRS7 Getting Started Guide for setting the host IP and port of the leader service if running the client from a seperate server
+
+# Usage: ansible-playbook edb-rs-05.join_network_eprs7.yml --extra-vars "host=eprs1 joiningname=eprs2 joiningip=192.168.1.1"
+
+# host=${Ansible Host entry for leader node}
 
 - hosts: "{{ host }}"
   gather_facts: True
   vars:
-        rspassword: "{{ rspwd }}"
-        dbpassword: "{{ dbpwd }}"
+        rsjoiningname: "{{ joiningname }}"
+        rsjoiningip: "{{ joiningip }}"
 
   tasks:
     - name: Join the EPRS Network
-      expect:
-        command: /bin/bash -c "/usr/edb/rs-7.0/client/bin/runRepCLI.sh -joinnetwork -servername leaderNode -host {{ansible_default_ipv4.address}} -port 8082 -user admin"
-        responses:
-          Question:
-          (.*)Enter user password(.*): "{{ rspassword }}"
+      shell: /bin/bash -c "/usr/edb/rs-7.0/client/bin/runRepCLI.sh -joinnetwork -servername {{rsjoiningname}} -host {{ rsjoiningip }} -port 8082 -ngxpasspath /opt/edb/.ngxpass -user admin"
