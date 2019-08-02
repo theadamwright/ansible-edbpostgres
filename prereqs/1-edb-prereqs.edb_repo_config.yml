@@ -1,9 +1,3 @@
-################################################################
-#
-# Copyright (c) 2016-2017 EnterpriseDB - All rights reserved.
-#
-################################################################
-
 # Prerequisite: Environment variables EDBYUMUSERNAME and EDBYUMPASSWORD must be set up on the Ansible Controller 
 
 # Usage: ansible-playbook prereqs/1-edb-prereqs.edb_repo_configure.yml --extra-vars "host=edb-servers"

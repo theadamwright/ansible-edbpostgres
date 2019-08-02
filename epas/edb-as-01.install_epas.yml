@@ -1,9 +1,3 @@
-################################################################
-#
-# Copyright (c) 2016-2017 EnterpriseDB - All rights reserved.
-#
-################################################################
-
 # Usage: ansible-playbook edb-as-01.install_epas.yml --extra-vars "host=epas-servers pgmajor=11"
 
 # Works EPAS 10 and up

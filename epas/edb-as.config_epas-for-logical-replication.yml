@@ -1,9 +1,3 @@
-################################################################
-#
-# Copyright (c) 2016-2017 EnterpriseDB - All rights reserved.
-#
-################################################################
-
 # Usage:  ansible-playbook edb-as.config_epas-for-logical-replication.yml --extra-vars "host=ansible-tests pgmajor=11"
 
 - hosts: "{{ host }}"
