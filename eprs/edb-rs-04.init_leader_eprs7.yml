@@ -4,7 +4,7 @@
 #
 ################################################################
 
-# Usage: ansible-playbook edb-rs-04.set_passwords_eprs7.yml --extra-vars "host=eprs-leader rspwd=adm1n"
+# Usage: ansible-playbook edb-rs-04.set_passwords_eprs7.yml --extra-vars "host=eprs1 rspwd=adm1n"
 
 - hosts: "{{ host }}"
   gather_facts: True

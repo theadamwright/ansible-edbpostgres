@@ -4,8 +4,8 @@
 #
 ################################################################
 
-# Usage:  ansible-playbook edb-rs-02.config_eprs7.yml --extra-vars "host=gcp-eprs"
-# Usage:  ansible-playbook edb-rs-02.config_eprs7.yml --extra-vars "host=gcp-eprs rsdata=/opt/edb/rsdata"
+# Usage:  ansible-playbook edb-rs-02.config_eprs7.yml --extra-vars "host=eprs-servers"
+# Usage:  ansible-playbook edb-rs-02.config_eprs7.yml --extra-vars "host=eprs-servers rsdata=/opt/edb/rsdata"
 
 - hosts: "{{ host }}"
   gather_facts: True

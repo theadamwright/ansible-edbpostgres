@@ -4,7 +4,7 @@
 #
 ################################################################
 
-# Usage:  ansible-playbook edb-rs-03.start_eprs7.yml --extra-vars "host=gcp-eprs"
+# Usage:  ansible-playbook edb-rs-03.start_eprs7.yml --extra-vars "host=eprs-servers"
 
 - hosts: "{{ host }}"
 
