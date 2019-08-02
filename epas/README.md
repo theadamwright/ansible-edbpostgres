@@ -51,6 +51,7 @@ ansible-playbook edb-as.config_epas-for-logical-replication.yml --extra-vars "ho
 ## Authors
 
   Author: Adam Wright 
+  
   E-mail ID: theadamwright@outlook.com
 
 ## License
