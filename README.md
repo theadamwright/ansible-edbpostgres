@@ -1,7 +1,7 @@
 # ansible-edbpostgres
 EDB Postgres, Deployed and Managed with Ansible. 
 
-* Pre-reqs forlder includes playbooks installing and configuring the EDB repo to access source installation: `prereqs/README.md`
+* Pre-reqs folder includes playbooks installing and configuring the EDB repo to access source installation: `prereqs/README.md`
 * EPAS folder includes playbooks for installing and configuring EDB Postgres Advanced Server 10 and up: `epas/README.md`
 * EPRS folder includes playbooks for setting up an EPRS cluster with n number of nodes , configured with best practices: `eprs/README.md`
 
