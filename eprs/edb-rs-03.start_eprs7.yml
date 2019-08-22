@@ -1,6 +1,9 @@
-# Usage:  ansible-playbook edb-rs-03.start_eprs7.yml --extra-vars "host=eprs-servers"
+# Usage: ansible-playbook eprs/edb-rs-03.start_eprs7.yml -i inventory.ini
 
-- hosts: "{{ host }}"
+- hosts: eprs-all
+  become: yes
+  become_user: root
+  become_method: sudo
 
   tasks:
     - name: Starting EPRS7 as a system service

@@ -1,6 +1,9 @@
-# Usage:  ansible-playbook edb-as-03.config_epas.yml --extra-vars "host=epas-servers pgmajor=11 cidr1=10.142.0.0/24 cidr2=10.138.0.0/24"
+# Usage:  ansible-playbook epas/edb-as-03.config_epas.yml -i inventory.ini --extra-vars "pgmajor=11 cidr1=192.168.1.0/24 cidr2=192.168.2.0/24"
 
-- hosts: "{{ host }}"
+- hosts: epas-all
+  become: yes
+  become_user: root
+  become_method: sudo
   vars:
         asmajor: "{{ pgmajor | default(11) }}"
         shared_buffers_cald: "{{ ansible_memtotal_mb * 0.20}}"

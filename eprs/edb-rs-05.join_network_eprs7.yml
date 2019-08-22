@@ -3,9 +3,10 @@
 
 # Usage: ansible-playbook edb-rs-05.join_network_eprs7.yml --extra-vars "host=eprs1 joiningname=eprs2 joiningip=192.168.1.2"
 
-# host=${Ansible Host entry for leader node}
-
-- hosts: "{{ host }}"
+- hosts: eprs-leader
+  become: yes
+  become_user: root
+  become_method: sudo
   gather_facts: True
   vars:
         rsjoiningname: "{{ joiningname }}"

@@ -32,3 +32,6 @@ testing/install_epel_repo.yml
 
 # Visual Studio Code files
 sftp.json
+
+# Ansible
+inventory.ini

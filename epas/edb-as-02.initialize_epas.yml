@@ -1,9 +1,12 @@
-# Usage: ansible-playbook edb-as-02.initialize_epas.yml --extra-vars "host=ansible-tests pgdata=/opt/edb/pgdata pgwal=/opt/edb/pgwal pgmajor=11"
+# Usage: ansible-playbook epas/edb-as-02.initialize_epas.yml -i inventory.ini --extra-vars "pgdata=/opt/edb/pgdata pgwal=/opt/edb/pgwal pgmajor=11"
 # PGDATA and PGWAL are optional
 
-- hosts: "{{ host }}"
+- hosts: epas-all
+  become: yes
+  become_user: root
+  become_method: sudo
   vars:
-        asmajor: "{{ pgmajor | default(11) }}"
+      asmajor: "{{ pgmajor | default(11) }}"
 
   tasks:
     - name: Create PGDATA direcotry

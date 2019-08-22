@@ -1,6 +1,9 @@
-# Usage: ansible-playbook edb-rs-04.set_passwords_eprs7.yml --extra-vars "host=eprs1 rspwd=adm1n"
+# Usage: ansible-playbook eprs/edb-rs-04.init_leader_eprs7.yml -i inventory.ini --extra-vars "rspwd=adm1n"
 
-- hosts: "{{ host }}"
+- hosts: eprs-leader
+  become: yes
+  become_user: root
+  become_method: sudo
   gather_facts: True
   vars:
         rspassword: "{{ rspwd }}"

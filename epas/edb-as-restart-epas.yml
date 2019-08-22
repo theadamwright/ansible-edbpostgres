@@ -1,5 +1,8 @@
-# Usage:  Usage: ansible-playbook edb-as-restart-epas.yml --extra-vars "host=ansible-tests pgmajor=11"
+# Usage:  Usage: ansible-playbook epas/edb-as-restart-epas.yml -i inventory.ini --extra-vars "host=epas1 pgmajor=11" 
 - hosts: "{{ host }}"
+  become: yes
+  become_user: root
+  become_method: sudo
   vars:
         asmajor: "{{ pgmajor | default(11) }}"
 

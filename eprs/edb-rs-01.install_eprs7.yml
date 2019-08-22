@@ -1,6 +1,9 @@
-# Usage: ansible-playbook edb-rs-01.install_eprs7.yml --extra-vars "host=eprs-servers"
+# Usage: ansible-playbook eprs/edb-rs-01.install_eprs7.yml -i inventory.ini
 
-- hosts: "{{ host }}"
+- hosts: eprs-all
+  become: yes
+  become_user: root
+  become_method: sudo
   vars:
         asmajor: "{{ pgmajor | default(11) }}"
 

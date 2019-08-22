@@ -8,19 +8,58 @@ APT coming soon...
 
 ## Getting Started
 
-
 ### Prerequisites
 
-1. The playbooks assume a internet connection to yum.enterprisedb.com.
+1. The playbooks assume a internet connection to {apt|yum}.enterprisedb.com.
 
-2. A EDB Repo account is required to install software from yum.enterprisedb.com. Access to EDB Software Repositories can be requested here: https://www.enterprisedb.com/repository-access-request
+2. A EDB Repo account is required to install software from EnterpriseDB software repositories. Access to EDB software repositories can be requested here: https://www.enterprisedb.com/repository-access-request
 
-3. EDB YUM credentials should be set as an environment variable on the Ansible controller server. To set once: 
+3. EDB repository credentials should be set as an environment variable on the Ansible controller server. To set once: 
 
 ```
 export EDBYUMUSERNAME="awright"
 export EDBYUMPASSWORD="00001111222233334444"
 ```
+
+4. An ansible inventory file with groups based on their purpose: epas-nodes, pgsql-nodes, eprs-leader, eprs-nodes. INI example: 
+
+```
+[eprs-leader]
+eprs1 ansible_host=192.168.1.1
+
+[eprs-followers]
+eprs2 ansible_host=192.168.1.2 
+
+[eprs-all:children]
+eprs-leader
+eprs-followers
+
+[eprs-all:vars]
+ansible_ssh_private_key_file=~/.ssh/edb_ops_rsa
+ansible_user=edb_ops
+
+[epas-masters]
+epas1 ansible_host=192.168.10.1
+epas2 ansible_host=192.168.10.2
+
+[epas-standbys]
+
+[epas-all:children]
+epas-masters
+epas-standbys
+
+[epas-all:vars]
+ansible_ssh_private_key_file=~/.ssh/edb_ops_rsa
+ansible_user=edb_ops
+
+[pgsql-masters]
+
+[pgsql-standbys]
+
+[pgsql-all:children]
+```
+
+Playbooks define which groups a playbook applies to. For example, since installing EDB tools applies to all servers, `- hosts: all` is defined in the playbook. 
 
 ### Installing
 
@@ -29,7 +68,7 @@ Playbook **1-edb-prereqs.edb_repo_config.yml** installs the `edb.repo` file onto
 In the example for **1-edb-prereqs.edb_repo_config.yml**, there is a global group edb-servers in our Ansible hosts file that will all have the EDB repo installed:
 
 ```
-ansible-playbook 1-edb-prereqs.edb_repo_config.yml --extra-vars "host=edb-servers"
+ansible-playbook prereqs/1-edb-prereqs.edb_repo_config.yml -i inventory.ini
 ```
 
 ## Authors

@@ -1,7 +1,10 @@
-# Usage:  ansible-playbook edb-rs-02.config_eprs7.yml --extra-vars "host=eprs-servers"
-# Usage:  ansible-playbook edb-rs-02.config_eprs7.yml --extra-vars "host=eprs-servers rsdata=/opt/edb/rsdata"
+# Usage:  ansible-playbook eprs/edb-rs-02.config_eprs7.yml -i inventory.ini
+# Usage:  ansible-playbook eprs/edb-rs-02.config_eprs7.yml -i inventory.ini --extra-vars "rsdata=/opt/edb/rsdata"
 
-- hosts: "{{ host }}"
+- hosts: eprs-all
+  become: yes
+  become_user: root
+  become_method: sudo
   gather_facts: True
 
   tasks:
@@ -11,7 +14,7 @@
         dest: /etc/profile.d/edb_rs_env.sh
         marker: "# {mark} Ansible Managed Environment Variables for EPRS7"
         block: |
-          export NGXPASSPATH=/opt/edb
+          export NGXPASSPATH=/opt/edb/.ngxpass
           export EPRS_HOME=/usr/edb/rs-7.0
           export EPRS_CLIENT_CONFIG=/usr/edb/rs-7.0/client/etc
           export EPRS_SERVER_CONFIG=/usr/edb/rs-7.0/server/etc
@@ -133,11 +136,11 @@
         regexp: 'unique.conflict.resolution.policy='
         line: 'unique.conflict.resolution.policy=SKIP'
 
-    - name: Increase Java Heap Size
-      replace:
-        path: /usr/edb/rs-7.0/server/etc/kafka-jvm-configs.properties
-        regexp: 'heap.opts=-Xms1G -Xmx4G'
-        replace: 'heap.opts=-Xms4G -Xmx8G'
+    # - name: Increase Java Heap Size
+    #  replace:
+    #    path: /usr/edb/rs-7.0/server/etc/kafka-jvm-configs.properties
+    #    regexp: 'heap.opts=-Xms1G -Xmx4G'
+    #    replace: 'heap.opts=-Xms4G -Xmx8G'
 
     - name: Set buffer.memory in producer.properties of all EPRS servers.
       lineinfile:

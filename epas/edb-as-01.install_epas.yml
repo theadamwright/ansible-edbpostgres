@@ -1,11 +1,13 @@
-# Usage: ansible-playbook edb-as-01.install_epas.yml --extra-vars "host=epas-servers pgmajor=11"
+# Usage: ansible-playbook epas/edb-as-01.install_epas.yml -i inventory.ini --extra-vars "pgmajor=11"
 
 # Works EPAS 10 and up
 
-
-- hosts: "{{ host }}"
+- hosts: epas-all
+  become: yes
+  become_user: root
+  become_method: sudo
   vars:
-        asmajor: "{{ pgmajor | default(11) }}"
+      asmajor: "{{ pgmajor | default(11) }}"
 
   tasks:
     - name: enable_enterprisedb-edbas
