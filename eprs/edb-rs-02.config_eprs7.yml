@@ -127,7 +127,7 @@
     - name: Add Node IP to RS application.properties
       replace:
         path: /usr/edb/rs-7.0/server/etc/application.properties
-        regexp: 'ngen.server.host=localhost'
+        regexp: '#?ngen.server.host=localhost'
         replace: 'ngen.server.host={{ansible_default_ipv4.address}}'
 
     - name: Don't stop RS on unique conflicts
