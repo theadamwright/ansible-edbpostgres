@@ -1,0 +1,33 @@
+# Usage:  ansible-playbook eprs/edb-rs.destroy_eprs7.yml -i inventory.ini --extra-vars "host=eprs1"
+
+- hosts: "{{ host }}"
+  become: yes
+  become_user: root
+  become_method: sudo
+
+  tasks:
+    - name: Stop EPRS System Service
+      systemd:
+        name: edb-rs-server.service
+        state: stopped
+        enabled: yes
+
+    - name: Remove EPRS Software Packages 
+      yum:
+        name : ["edb-rs*"]
+        state: removed
+      
+    - name: Remove Kafka DATA directory 
+      file:
+        path: /var/lib/edb/rs/
+        state: absent
+
+    - name: Remove EPRS Logs 
+      file:
+        path: /var/log/edb/rs/  
+        state: absent     
+
+    - name: Remove EPRS Libraries
+      file:
+        path: /usr/edb/rs-7.0/ 
+        state: absent     
