@@ -23,14 +23,14 @@ If the EDB repo is not already installed and configured, refer to `../prereqs/RE
 
 Note: If the `pgmajor` variable is not supplied, the playbook will default to installing *EPAS 11*
 ```
-ansible-playbook epas/edb-as-01.install_epas.yml -i inventory.ini --extra-vars "pgmajor=11""
+ansible-playbook epas/edb-as-01.install_epas.yml -i inventory.ini --extra-vars "pgmajor=11"
 ```
 
 **edb-as-02.initialize_epas** will initialize a new EPAS cluster and configure the system service to start on boot 
 
 Custom pgdata and pgwal are optional: 
 ```
-ansible-playbook ansible-playbook epas/edb-as-02.initialize_epas.yml -i inventory.ini --extra-vars "pgdata=/opt/edb/pgdata pgwal=/opt/edb/pgwal pgmajor=11"
+ansible-playbook epas/edb-as-02.initialize_epas.yml -i inventory.ini --extra-vars "pgdata=/opt/edb/pgdata pgwal=/opt/edb/pgwal pgmajor=11"
 ```
 **edb-as-03.config_epas.yml** configures EPAS with EDB Best Practices configurations. 
 

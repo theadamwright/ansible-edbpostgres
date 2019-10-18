@@ -10,16 +10,6 @@
       asmajor: "{{ pgmajor | default(11) }}"
 
   tasks:
-    - name: enable_enterprisedb-edbas
-      shell: sed -i "\/edbas{{ asmajor }}/,/gpgcheck/ s/enabled=0/enabled=1/" /etc/yum.repos.d/edb.repo
-      args:
-        warn: false
-
-    - name: enable_edb-dependencies
-      shell: sed -i "\/enterprisedb-dependencies/,/gpgcheck/ s/enabled=0/enabled=1/" /etc/yum.repos.d/edb.repo
-      args:
-        warn: false
-
     - name: Install EDB Postgres Advanced Server
       yum:
         name : ["edb-as{{ asmajor }}-server-core"]
